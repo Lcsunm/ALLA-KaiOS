@@ -1,0 +1,22 @@
+{
+    "name": "AllA",
+    "description": "APP管理应用",
+    "version": "0.1.2",
+    "origin": "app://alla.kaios.lcsunm.cc",
+    "launch_path": "/index.html",
+    "icons": {
+        "128": "/icons/icon128x128.png"
+    },
+    "type": "certified",
+    "developer": {
+        "name": "Lcsunm",
+        "url": "http://kaios.lcsunm.cc"
+    },
+    "permissions": {
+        "webapps-manage": {},
+        "engmode-extension": {},
+        "device-storage:sdcard": { "access": "readwrite" },
+        "flip":{},
+        "storage":{}
+    }
+}
