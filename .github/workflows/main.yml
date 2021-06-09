@@ -1,8 +1,8 @@
 name: Package OmniSD zip nightly
 
 on:
-  schedule:
-    - cron: "0 22 * * *"  # scheduled at 06:00 (UTC+8) everyday
+#   schedule:
+#     - cron: "0 22 * * *"  # scheduled at 06:00 (UTC+8) everyday
   workflow_dispatch:
 
 jobs:
