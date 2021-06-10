@@ -1,6 +1,6 @@
 {
     "name": "AllA",
-    "description": "APP管理应用",
+    "description": "APP manager",
     "version": "0.1.2",
     "origin": "app://alla.kaios.lcsunm.cc",
     "launch_path": "/index.html",
@@ -18,5 +18,11 @@
         "device-storage:sdcard": { "access": "readwrite" },
         "flip":{},
         "storage":{}
+    },
+    "locales": {
+        "zh-CN": {
+            "name": "AllA",
+            "description": "应用管理"
+        }
     }
 }
