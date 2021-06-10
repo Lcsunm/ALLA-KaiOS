@@ -9,10 +9,12 @@
 
     <link rel="stylesheet" href="css/flex.css">
     <link rel="stylesheet" href="css/main.css">
+    <link rel="prefetch" type="application/l10n" href="locales/locales.ini" />
 
     <!-- Inline scripts are forbidden in Firefox OS apps (CSP restrictions),
          so we use a script file. -->
     <script src="js/focusable-core.js" defer></script>
+    <script src="js/l10n.js" defer></script>
     <script src="app.js" defer></script>
 
 </head>
@@ -23,9 +25,9 @@
         <div id="Title">ALLA</div>
         <div id="Items" class="flex-1 flex-v scroll-y"></div>
         <div id="NavigationBar" class=" flex-h">
-            <div class="Left">备份到SD卡</div>
-            <div class="Center">打开</div>
-            <div class="Right">卸载</div>
+            <div class="Left" data-l10n-id="backup"></div>
+            <div class="Center" data-l10n-id="run"></div>
+            <div class="Right" data-l10n-id="uninstall"></div>
         </div>
     </div>
 </body>

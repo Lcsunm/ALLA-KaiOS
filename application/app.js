@@ -1,3 +1,5 @@
+const translate = navigator.mozL10n.get;
+
 window.addEventListener("load", function () {
     console.log("ALLA");
 
@@ -41,7 +43,7 @@ const onClick_Uninstall = () => {
     if (!mItem || mItem.uninstalled) {
         return;
     }
-    let b = confirm(`确认卸载 ${mItem.name} ？`);
+    let b = confirm(translate('confirm_uninstall') + ` ${mItem.name} ？`);
     if (b) {
         let request = navigator.mozApps.mgmt.uninstall(mItem.mozApp);
         // request.onsuccess = (result) => {
@@ -172,7 +174,7 @@ const onClick_Copy = () => {
     let request0 = sdcard.available();
     request0.onsuccess = (success) => {
         if (success.target.result != "available") {
-            alert("无效的SD卡");
+            alert(translate('invalid_sd'));
             return;
         }
         mLoading = true;
@@ -184,18 +186,18 @@ const onClick_Copy = () => {
         let cmd3 = `cp -r /data/local/webapps/${app} ${sdcard}`;
         let cmd = [cmd1, cmd2, cmd3];
         let error = () => {
-            alert("操作失败");
+            alert(translate('operation_failed'));
             mLoading = false;
         };
         let request = navigator.engmodeExtension.startUniversalCommand(cmd.join(";"), true);
         request.onsuccess = (result) => {
-            alert("已备份至" + sdcard + app);
+            alert(translate('backup_to') + sdcard + app);
             mLoading = false;
         };
         request.onerror = error;
     };
 
     request0.onerror = () => {
-        alert("无效的SD卡");
+        alert(translate('invalid_sd'));
     };
 };
