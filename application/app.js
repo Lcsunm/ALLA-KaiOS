@@ -5,16 +5,29 @@ window.addEventListener("load", function () {
 
     document.addEventListener("keydown", (e) => {
         switch (e.key) {
+            case "Backspace":
             case "SoftLeft":
-                // loadData_Apps();
-                onClick_Copy();
-                break;
-            case "Q":
-                loadData_Apps_Test();
+            case "q":
+            case "SoftRight":
+            case "e":
+                if (checkMenu()) {
+                    e.preventDefault();
+                    closeMenu();
+                    return;
+                }
+            case "Enter":
+                if (checkMenu()) {
+                    return;
+                }
+        }
+        switch (e.key) {
+            case "SoftLeft":
+            case "q":
+                onClick_Menu();
                 break;
             case "SoftRight":
-            case "E":
-                onClick_Uninstall();
+            case "e":
+                window.close();
                 break;
             case "Enter":
                 onClick_Enter();
@@ -32,6 +45,80 @@ window.addEventListener("load", function () {
     loadData_Apps();
 });
 
+const mMenuItems = ["backup_internal", "backup_external", "uninstall"];
+
+const checkMenu = () => {
+    if (mMenu) {
+        return true;
+    }
+    return false;
+};
+
+const checkFocus = () => {
+    if (mMenu) {
+        focusable.limitingEl = mMenu;
+        let items = mMenu.querySelector(".Items");
+        if (!items.children.length) {
+            mMenuItems.forEach((o) => {
+                let view = document.createElement("div");
+                view.classList.add("Item");
+                view.setAttribute("focusable", "");
+                view.innerText = translate(o);
+                view.addEventListener("click", () => {
+                    onItemClick_Menu(o);
+                });
+                items.appendChild(view);
+            });
+        }
+        let item = items.querySelector(".Item");
+        item && focusable.requestFocus(item);
+    } else {
+        focusable.limitingEl = null;
+        if (mItem) {
+            focusable.requestFocus(mItem.view);
+        } else {
+            let firstEl = document.querySelector("[focusable]");
+            firstEl && focusable.requestFocus(firstEl);
+        }
+    }
+};
+
+const closeMenu = () => {
+    mMenu.classList.add("hidden");
+    mMenu = null;
+    checkFocus();
+};
+
+const onClick_Menu = () => {
+    if (mMenu) {
+        return;
+    }
+    mMenu = document.getElementById("Menu");
+    mMenu.classList.remove("hidden");
+    if (mItem) {
+        mMenu.querySelector(".Title").innerText = mItem.name;
+    }
+    checkFocus();
+};
+
+const onItemClick_Menu = (type) => {
+    if (!mMenu) {
+        return;
+    }
+    switch (type) {
+        case "backup_internal":
+            onClick_Copy(false);
+            break;
+        case "backup_external":
+            onClick_Copy(true);
+            break;
+        case "uninstall":
+            onClick_Uninstall();
+            break;
+    }
+    closeMenu();
+};
+
 const onClick_Enter = () => {
     if (!mItem) {
         return;
@@ -43,7 +130,7 @@ const onClick_Uninstall = () => {
     if (!mItem || mItem.uninstalled) {
         return;
     }
-    let b = confirm(translate('confirm_uninstall') + ` ${mItem.name} ？`);
+    let b = confirm(translate("confirm_uninstall") + ` ${mItem.name} ？`);
     if (b) {
         let request = navigator.mozApps.mgmt.uninstall(mItem.mozApp);
         // request.onsuccess = (result) => {
@@ -79,6 +166,7 @@ const getAppIconUrl = (e, t, n) => {
 let mLoaded = false;
 let mItem = null;
 let mLoading = false;
+let mMenu = null;
 
 const loadData_Apps = () => {
     if (mLoaded) {
@@ -129,6 +217,7 @@ const loadData_Apps = () => {
             });
             item.view = items.appendChild(view);
         });
+        checkFocus();
     };
     result.onerror = (error) => {
         console.log("error", error);
@@ -166,38 +255,48 @@ const onClick_Test = () => {
     console.log(navigator);
 };
 
-const onClick_Copy = () => {
+const onClick_Copy = (isExternal = false) => {
     if (mLoading || !mItem) {
+        return;
+    }
+    let fn = () => {
+        mLoading = true;
+        let app = mItem.origin.substr(6);
+        let newDirectory = `${mItem.name}[${app}]`;
+        let internal = "/data/usbmsc_mnt";
+        let external = "/sdcard";
+        let path = "/ALLA/apps/";
+        let sdcard = (isExternal ? external : internal) + path;
+        let cmd1 = `mkdir -p ${sdcard}`;
+        let cmd2 = `cp -r /system/b2g/webapps/${app} ${sdcard}`;
+        let cmd3 = `cp -r /data/local/webapps/${app} ${sdcard}`;
+        let cmd4 = `mv ${sdcard}${app} ${sdcard}${newDirectory}`;
+        let cmd = [cmd1, cmd2, cmd3, cmd4];
+        let error = () => {
+            alert(translate("operation_failed"));
+            mLoading = false;
+        };
+        let request = navigator.engmodeExtension.startUniversalCommand(cmd.join(";"), true);
+        request.onsuccess = (result) => {
+            alert(`${translate("backup_to")} ${isExternal ? translate("directory_external") : translate("directory_internal")}${path}${newDirectory}`);
+            mLoading = false;
+        };
+        request.onerror = error;
+    };
+    if (!isExternal) {
+        fn();
         return;
     }
     let sdcard = navigator.getDeviceStorage("sdcard");
     let request0 = sdcard.available();
     request0.onsuccess = (success) => {
         if (success.target.result != "available") {
-            alert(translate('invalid_sd'));
+            alert(translate("invalid_sd"));
             return;
         }
-        mLoading = true;
-        let app = mItem.origin.substr(6);
-        let sdcard = "/sdcard/ALLA/apps/";
-        // let sdcard = "/storage/emulated/ALLA/apps/";
-        let cmd1 = `mkdir -p ${sdcard}`;
-        let cmd2 = `cp -r /system/b2g/webapps/${app} ${sdcard}`;
-        let cmd3 = `cp -r /data/local/webapps/${app} ${sdcard}`;
-        let cmd = [cmd1, cmd2, cmd3];
-        let error = () => {
-            alert(translate('operation_failed'));
-            mLoading = false;
-        };
-        let request = navigator.engmodeExtension.startUniversalCommand(cmd.join(";"), true);
-        request.onsuccess = (result) => {
-            alert(translate('backup_to') + sdcard + app);
-            mLoading = false;
-        };
-        request.onerror = error;
+        fn();
     };
-
     request0.onerror = () => {
-        alert(translate('invalid_sd'));
+        alert(translate("invalid_sd"));
     };
 };

@@ -24,10 +24,30 @@
     <div class="flex-v wh-100">
         <div id="Title">ALLA</div>
         <div id="Items" class="flex-1 flex-v scroll-y"></div>
-        <div id="NavigationBar" class=" flex-h">
-            <div class="Left" data-l10n-id="backup"></div>
+        <div id="NavigationBar" class="NavigationBar flex-h">
+            <div class="Left" data-l10n-id="menu"></div>
             <div class="Center" data-l10n-id="run"></div>
-            <div class="Right" data-l10n-id="uninstall"></div>
+            <div class="Right" data-l10n-id="quit"></div>
+        </div>
+    </div>
+    <div id="Menu" class="Menu flex-v bottom hidden">
+        <div class="Content flex-v">
+            <div class="Title">APP</div>
+            <div class="Items flex-v">
+                <!-- <div class="Item" focusable
+                    onclick="onItemClick_Menu('backup_internal');"
+                    data-l10n-id="backup_internal"></div>
+                <div class="Item" focusable
+                    onclick="onItemClick_Menu('backup_external');"
+                    data-l10n-id="backup_external"></div>
+                <div class="Item" focusable
+                    onclick="onItemClick_Menu('uninstall');"
+                    data-l10n-id="uninstall"></div> -->
+            </div>
+            <div class="NavigationBar">
+                <div class="Center" data-l10n-id="select"></div>
+                <div class="Right" data-l10n-id="back"></div>
+            </div>
         </div>
     </div>
 </body>

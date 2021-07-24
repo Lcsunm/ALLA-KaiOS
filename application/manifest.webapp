@@ -1,7 +1,7 @@
 {
     "name": "AllA",
     "description": "APP manager",
-    "version": "0.1.2",
+    "version": "0.1.3",
     "origin": "app://alla.kaios.lcsunm.cc",
     "launch_path": "/index.html",
     "icons": {

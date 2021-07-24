@@ -233,18 +233,18 @@ const defineFocusable = function (z) {
             },
             set: function (a) {
                 null !== a
-                    ? (document.querySelectorAll("[focusable]").forEach(function (b) {
+                    ? (Array.from(document.querySelectorAll("[focusable]")).forEach(function (b) {
                           b.setAttribute("focusdisable", "");
                           b.removeAttribute("focusable");
                       }),
-                      a.querySelectorAll("[focusdisable]").forEach(function (b) {
+                      Array.from(a.querySelectorAll("[focusdisable]")).forEach(function (b) {
                           b.setAttribute("focusable", "");
                           b.removeAttribute("focusdisable");
                       }))
-                    : (document.querySelectorAll("[focusable]").forEach(function (b) {
+                    : (Array.from(document.querySelectorAll("[focusable]")).forEach(function (b) {
                           b.removeAttribute("focusdisable");
                       }),
-                      document.querySelectorAll("[focusdisable]").forEach(function (b) {
+                      Array.from(document.querySelectorAll("[focusdisable]")).forEach(function (b) {
                           b.setAttribute("focusable", "");
                           b.removeAttribute("focusdisable");
                       }));
