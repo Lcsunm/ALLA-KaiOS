@@ -264,7 +264,11 @@ const onClick_Copy = (isExternal = false) => {
         let app = mItem.origin.substr(6);
         let newDirectory = `${mItem.name}[${app}]`;
         let [internal, external] = navigator.getDeviceStorages("sdcard").map(a=>a.storagePath); // in theory, 0 is always internal and 1 is always external; 
-        if (!external && isExternal) return alert("operation_failed");
+        let error = () => {
+            alert(translate("operation_failed"));
+            mLoading = false;
+        };
+        if (!external && isExternal) return error("operation_failed");
         let path = "/ALLA/apps/";
         let sdcard = (isExternal ? external : internal) + path;
         let cmd1 = `mkdir -p ${sdcard}`;
@@ -272,10 +276,6 @@ const onClick_Copy = (isExternal = false) => {
         let cmd3 = `cp -r /data/local/webapps/${app} ${sdcard}`;
         let cmd4 = `mv ${sdcard}${app} ${sdcard}${newDirectory}`;
         let cmd = [cmd1, cmd2, cmd3, cmd4];
-        let error = () => {
-            alert(translate("operation_failed"));
-            mLoading = false;
-        };
         let request = navigator.engmodeExtension.startUniversalCommand(cmd.join(";"), true);
         request.onsuccess = (result) => {
             alert(`${translate("backup_to")} ${isExternal ? translate("directory_external") : translate("directory_internal")}${path}${newDirectory}`);
