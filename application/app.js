@@ -263,8 +263,8 @@ const onClick_Copy = (isExternal = false) => {
         mLoading = true;
         let app = mItem.origin.substr(6);
         let newDirectory = `${mItem.name}[${app}]`;
-        let internal = "/data/usbmsc_mnt";
-        let external = "/sdcard";
+        let [internal, external] = navigator.getDeviceStorages("sdcard").map(a=>a.storagePath); // in theory, 0 is always internal and 1 is always external; 
+        if (!external && isExternal) return alert("operation_failed");
         let path = "/ALLA/apps/";
         let sdcard = (isExternal ? external : internal) + path;
         let cmd1 = `mkdir -p ${sdcard}`;
